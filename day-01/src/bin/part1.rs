@@ -1,5 +1,18 @@
+use std::{env, fs};
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+
+    let file_path = &args[1];
+    println!("Reading from file '{}'", file_path);
+
+    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let mut sum = 0;
+    contents
+        .lines()
+        .into_iter()
+        .for_each(|input| sum += combine_digits(input));
+    println!("Result = {}", sum);
 }
 
 fn combine_digits(input: &str) -> u32 {
