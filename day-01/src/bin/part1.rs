@@ -3,7 +3,20 @@ fn main() {
 }
 
 fn combine_digits(input: &str) -> u32 {
-    return 0;
+    let first_character = input
+        .chars()
+        .find(|&c| c.is_numeric())
+        .expect("Input should contain a number")
+        .to_digit(10)
+        .unwrap();
+    let last_character = input
+        .chars()
+        .rev()
+        .find(|&c| c.is_numeric())
+        .expect("Input should contain a number")
+        .to_digit(10)
+        .unwrap();
+    return (first_character * 10) + last_character;
 }
 
 #[cfg(test)]
