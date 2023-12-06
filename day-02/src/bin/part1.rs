@@ -1,11 +1,31 @@
+use std::{env, fs};
+
 use day_02::data::{CubeGroup, Game};
 
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+
+    let file_path = &args[1];
+    println!("Reading from file '{}'", file_path);
+
+    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let mut sum: u32 = 0;
+    let bag = CubeGroup {
+        red_cubes: 12,
+        green_cubes: 13,
+        blue_cubes: 14,
+    };
+    contents.lines().into_iter().for_each(|input| {
+        let game = Game::from_line(input);
+        if is_game_possible(&game, &bag) {
+            sum += game.id as u32;
+        }
+    });
+    println!("Result = {}", sum);
 }
 
-pub fn is_game_possible(game: Game, bag: CubeGroup) -> bool {
-    for reveal in game.reveals {
+pub fn is_game_possible(game: &Game, bag: &CubeGroup) -> bool {
+    for reveal in game.reveals.iter() {
         if reveal.red_cubes > bag.red_cubes
             || reveal.blue_cubes > bag.blue_cubes
             || reveal.green_cubes > bag.green_cubes
@@ -92,6 +112,6 @@ mod tests {
             green_cubes: 13,
             blue_cubes: 14,
         };
-        assert_eq!(should_be_possible, is_game_possible(game, bag))
+        assert_eq!(should_be_possible, is_game_possible(&game, &bag))
     }
 }
