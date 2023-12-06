@@ -25,15 +25,10 @@ fn main() {
 }
 
 pub fn is_game_possible(game: &Game, bag: &CubeGroup) -> bool {
-    for reveal in game.reveals.iter() {
-        if reveal.red_cubes > bag.red_cubes
-            || reveal.blue_cubes > bag.blue_cubes
-            || reveal.green_cubes > bag.green_cubes
-        {
-            return false;
-        }
-    }
-    true
+    let iter = game.reveals.iter();
+    return bag.red_cubes > iter.clone().map(|reveal| reveal.red_cubes).max().unwrap()
+        && bag.green_cubes > iter.clone().map(|reveal| reveal.green_cubes).max().unwrap()
+        && bag.blue_cubes > iter.clone().map(|reveal| reveal.blue_cubes).max().unwrap();
 }
 
 #[cfg(test)]
