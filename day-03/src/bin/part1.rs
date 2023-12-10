@@ -40,6 +40,16 @@ mod tests {
         let contents = contents.replace("\n", "");
         let schematic = EngineSchematic::new(contents.chars().collect(), (width, height))
             .expect("Failed creating schematic from input");
+
+        assert_eq!(
+            2,
+            schematic
+                .part_numbers
+                .iter()
+                .filter(|part| false == part.is_adjacent_to_symbol(&schematic))
+                .count()
+        );
+
         let sum: u32 = schematic
             .part_numbers
             .iter()
