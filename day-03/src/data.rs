@@ -3,9 +3,9 @@ use std::{collections::HashSet, fmt};
 
 pub struct EngineSchematic {
     data: Vec<char>,
-    size: (u8, u8),
-    part_numbers: Vec<PartNumber>,
-    symbols: Vec<Symbol>,
+    pub size: (u8, u8),
+    pub part_numbers: Vec<PartNumber>,
+    pub symbols: Vec<Symbol>,
 }
 
 #[derive(Debug, Clone)]
