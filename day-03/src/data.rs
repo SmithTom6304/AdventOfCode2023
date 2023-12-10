@@ -26,7 +26,7 @@ impl fmt::Display for OutOfBoundsError {
 
 impl EngineSchematic {
     pub fn new(data: Vec<char>, size: (u8, u8)) -> Result<Self> {
-        if data.len() != (size.0 * size.1) as usize {
+        if data.len() != (size.0 as u32 * size.1 as u32) as usize {
             bail!(SizeError);
         }
 
@@ -132,13 +132,13 @@ impl EngineSchematic {
         if !self.in_bounds(cell) {
             bail!(OutOfBoundsError)
         }
-        let index = (self.size.0 * cell.1) as usize + cell.0 as usize;
+        let index = (self.size.0 as u32 * cell.1 as u32) as usize + cell.0 as usize;
         Ok(self.data.get(index).expect("Index was not in bounds"))
     }
 
     pub fn get_adjacent_cells(&self, cell: &(u8, u8)) -> Vec<(u8, u8)> {
         let mut cell_indexes = vec![];
-        let offsets: Vec<(i8, i8)> = vec![
+        let offsets: Vec<(i32, i32)> = vec![
             (-1, -1),
             (0, -1),
             (1, -1),
@@ -161,9 +161,9 @@ impl EngineSchematic {
         cell_indexes
     }
 
-    fn try_get_cell_from_offset(cell: &(u8, u8), offset: &(i8, i8)) -> Option<(u8, u8)> {
-        let x = cell.0 as i8 + offset.0;
-        let y = cell.1 as i8 + offset.1;
+    fn try_get_cell_from_offset(cell: &(u8, u8), offset: &(i32, i32)) -> Option<(u8, u8)> {
+        let x = cell.0 as i32 + offset.0;
+        let y = cell.1 as i32 + offset.1;
         if x < 0 || y < 0 {
             return None;
         }
