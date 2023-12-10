@@ -1,9 +1,5 @@
 use anyhow::{bail, Result};
-use std::{
-    cell::{RefCell, RefMut},
-    fmt,
-    rc::Rc,
-};
+use std::{collections::HashSet, fmt};
 
 pub struct EngineSchematic {
     data: Vec<char>,
@@ -108,7 +104,7 @@ impl EngineSchematic {
         c.is_numeric()
     }
 
-    fn char_is_symbol(c: &char) -> bool {
+    pub fn char_is_symbol(c: &char) -> bool {
         !Self::char_is_part_number(c) && c != &'.'
     }
 
@@ -139,6 +135,40 @@ impl EngineSchematic {
         let index = (self.size.0 * cell.1) as usize + cell.0 as usize;
         Ok(self.data.get(index).expect("Index was not in bounds"))
     }
+
+    pub fn get_adjacent_cells(&self, cell: &(u8, u8)) -> Vec<(u8, u8)> {
+        let mut cell_indexes = vec![];
+        let offsets: Vec<(i8, i8)> = vec![
+            (-1, -1),
+            (0, -1),
+            (1, -1),
+            (-1, 0),
+            (1, 0),
+            (-1, 1),
+            (0, 1),
+            (1, 1),
+        ];
+        for offset in offsets {
+            let cell_index = match Self::try_get_cell_from_offset(cell, &offset) {
+                Some(val) => val,
+                None => continue,
+            };
+            if !self.in_bounds(&cell_index) {
+                continue;
+            }
+            cell_indexes.push(cell_index);
+        }
+        cell_indexes
+    }
+
+    fn try_get_cell_from_offset(cell: &(u8, u8), offset: &(i8, i8)) -> Option<(u8, u8)> {
+        let x = cell.0 as i8 + offset.0;
+        let y = cell.1 as i8 + offset.1;
+        if x < 0 || y < 0 {
+            return None;
+        }
+        Some((x as u8, y as u8))
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -146,6 +176,23 @@ pub struct PartNumber {
     pub number: u8,
     pub row: u8,
     pub columns: Vec<u8>,
+}
+
+impl PartNumber {
+    pub fn is_adjacent_to_symbol(&self, schematic: &EngineSchematic) -> bool {
+        let mut cells_to_check = HashSet::new();
+        for column in self.columns.iter() {
+            let cell = (column.clone(), self.row);
+            let adjacent_cells = schematic.get_adjacent_cells(&cell);
+            adjacent_cells
+                .into_iter()
+                .for_each(|adj| _ = cells_to_check.insert(adj));
+        }
+        cells_to_check.iter().any(|cell| {
+            let c = schematic.at(cell).expect("Error indexing into schematic");
+            EngineSchematic::char_is_symbol(c)
+        })
+    }
 }
 
 pub struct Symbol {
@@ -156,8 +203,6 @@ pub struct Symbol {
 
 #[cfg(test)]
 mod an_engine_schematic {
-    use crate::data::PartNumber;
-
     use super::EngineSchematic;
 
     #[test]
@@ -173,5 +218,34 @@ mod an_engine_schematic {
         assert_eq!(size, schematic.size);
         assert_eq!(2, schematic.part_numbers.len());
         assert_eq!(1, schematic.symbols.len());
+    }
+}
+
+#[cfg(test)]
+mod a_part_number {
+    use super::EngineSchematic;
+
+    #[test]
+    fn can_determine_if_adjacent_to_symbol() {
+        let data = vec!['.', '&', '.', '1', '.', '.', '.', '.', '6'];
+        let size: (u8, u8) = (3, 3);
+
+        let schematic = match EngineSchematic::new(data.clone(), size.clone()) {
+            Ok(sch) => sch,
+            Err(err) => panic!("{}", err),
+        };
+
+        let part_number_1 = schematic
+            .part_numbers
+            .iter()
+            .find(|pn| pn.number == 1)
+            .expect("Could not find part number 1");
+        let part_number_6 = schematic
+            .part_numbers
+            .iter()
+            .find(|pn| pn.number == 6)
+            .expect("Could not find part number 6");
+        assert!(part_number_1.is_adjacent_to_symbol(&schematic));
+        assert!(false == part_number_6.is_adjacent_to_symbol(&schematic));
     }
 }
