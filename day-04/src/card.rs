@@ -1,6 +1,7 @@
 use std::collections::HashSet;
+use std::hash::Hash;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Card {
     pub id: u8,
     pub winning_numbers: HashSet<u8>,
@@ -38,7 +39,7 @@ impl Card {
         }
     }
 
-    fn get_no_of_winning_numbers(&self) -> u8 {
+    pub fn get_no_of_winning_numbers(&self) -> u8 {
         self.player_numbers
             .intersection(&self.winning_numbers)
             .count() as u8
@@ -50,6 +51,12 @@ impl Card {
             return 0;
         }
         2_u32.pow(no_of_winning_numbers as u32 - 1)
+    }
+}
+
+impl Hash for Card {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state)
     }
 }
 
