@@ -89,7 +89,7 @@ impl EngineSchematic {
     ) -> PartNumber {
         let columns = indices
             .iter()
-            .map(|ind| Self::index_to_coordinate(*ind, &size).1)
+            .map(|ind| Self::index_to_coordinate(*ind, &size).0)
             .collect();
         PartNumber {
             number: Self::indices_to_string(indices, &data)
