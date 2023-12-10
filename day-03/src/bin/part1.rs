@@ -12,6 +12,7 @@ fn main() {
     let height = contents.lines().count();
     let width = (contents.len() / height) as u8;
     let height = height as u8;
+    let contents = contents.replace("\n", "");
     let schematic = EngineSchematic::new(contents.chars().collect(), (width, height))
         .expect("Failed creating schematic from input");
     let sum: u32 = schematic
