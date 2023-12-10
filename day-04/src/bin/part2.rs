@@ -14,6 +14,14 @@ fn main() {
         let card = Card::from_line(line);
         _ = cards.insert(card.id, card)
     });
+
+    let mut total_cards: Vec<&Card> = Vec::new();
+    for card in cards.values() {
+        get_scratchcards(card, &cards)
+            .iter()
+            .for_each(|&c| _ = total_cards.push(c));
+    }
+    println!("Result = {}", total_cards.len());
 }
 
 fn get_scratchcards<'a>(card: &'a Card, cards: &'a HashMap<u8, Card>) -> Vec<&'a Card> {
