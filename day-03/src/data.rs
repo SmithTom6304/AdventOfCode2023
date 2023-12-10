@@ -173,7 +173,7 @@ impl EngineSchematic {
 
 #[derive(Debug, PartialEq)]
 pub struct PartNumber {
-    pub number: u8,
+    pub number: u32,
     pub row: u8,
     pub columns: Vec<u8>,
 }
