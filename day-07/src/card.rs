@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Card {
     Ace = 14,
     King = 13,

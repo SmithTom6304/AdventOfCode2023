@@ -1,6 +1,6 @@
 use super::card::Card;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Hand {
     cards: [Card; 5],
 }
