@@ -1,7 +1,25 @@
-use std::{iter::Map, ops::Range};
+use std::{env, fs, iter::Map, ops::Range};
 
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+
+    let file_path = &args[1];
+    println!("Reading from file '{}'", file_path);
+
+    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let mut lines = contents.lines();
+
+    // Get times
+    let times = lines.next().expect("Input had no times line");
+    let times = values_from_line(times["Time:".len()..].trim());
+    let distances = lines.next().expect("Input had no distances line");
+    let distances = values_from_line(distances["Distance:".len()..].trim());
+    let races = times.iter().zip(distances.iter());
+    let result: u32 = races
+        .map(|race| distances_greater_than_record(*race.0, *race.1).count() as u32)
+        .product();
+
+    println!("Result = {}", result);
 }
 
 fn distance(hold_time: u32, total_time: u32) -> u32 {
