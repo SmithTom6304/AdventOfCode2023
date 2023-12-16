@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::{collections::VecDeque, env, fs};
 
 use day_05::item_map::{ItemMap, ItemMapEntry};
@@ -50,10 +51,11 @@ fn main() {
     maps.push_back(current_map);
 
     let lowest_location_number = seed_ranges
-        .iter()
+        .par_iter()
         .flat_map(|seed_range| {
             let (seed, range) = *seed_range;
             let result = (seed..(seed + range))
+                .into_par_iter()
                 .map(|seed| map_continuous(&maps, &seed))
                 .min();
             result
