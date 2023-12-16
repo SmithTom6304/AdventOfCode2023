@@ -17,7 +17,7 @@ fn main() {
     let distances = values_from_line(distances["Distance:".len()..].trim());
     let races = times.iter().zip(distances.iter());
     let result: u32 = races
-        .map(|race| distances_greater_than_record(*race.0, *race.1).count() as u32)
+        .map(|race| distances_greater_than_record(*race.0 as u64, *race.1 as u64).count() as u32)
         .product();
 
     println!("Result = {}", result);
@@ -43,7 +43,7 @@ mod tests {
         let distances = values_from_line(distances["Distance:".len()..].trim());
         let races = times.iter().zip(distances.iter());
         let mut ways_to_win_iter =
-            races.map(|race| distances_greater_than_record(*race.0, *race.1));
+            races.map(|race| distances_greater_than_record(*race.0 as u64, *race.1 as u64));
         let race_1_ways_to_win = ways_to_win_iter.next().expect("Expected result for race 1");
         let race_2_ways_to_win = ways_to_win_iter.next().expect("Expected result for race 2");
         let race_3_ways_to_win = ways_to_win_iter.next().expect("Expected result for race 3");
