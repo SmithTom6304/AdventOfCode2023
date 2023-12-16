@@ -41,6 +41,7 @@ fn main() {
             current_map.entries.push(ItemMapEntry::from_line(line));
         }
     }
+    maps.push_back(current_map);
 
     let lowest_location_number = seeds
         .iter()
