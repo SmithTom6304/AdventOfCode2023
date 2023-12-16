@@ -13,21 +13,18 @@ mod tests {
     #[case(55, 57)]
     #[case(13, 13)]
     fn can_map_seeds_to_soil(#[case] seed: u8, #[case] soil: u8) {
-        let mapping_1 = ItemMapEntry {
+        let mut mappings = vec![];
+        mappings.push(ItemMapEntry {
             destination_range_start: 50,
             source_range_start: 98,
             range_length: 2,
-        };
-        let mapping_2 = ItemMapEntry {
+        });
+        mappings.push(ItemMapEntry {
             destination_range_start: 52,
             source_range_start: 50,
             range_length: 48,
-        };
+        });
 
-        let mut map = ItemMap::new();
-        map.add(mapping_1);
-        map.add(mapping_2);
-
-        assert_eq!(soil, map.get(&seed));
+        assert_eq!(soil, ItemMap::get(&mappings, &seed));
     }
 }
