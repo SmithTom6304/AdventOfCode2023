@@ -33,12 +33,6 @@ impl Ord for Hand {
             ord => return ord,
         }
         for card_pair in self.cards.iter().zip(other.cards.iter()) {
-            println!(
-                "Comparison of {:?} and {:?} is {:?}",
-                card_pair.0,
-                card_pair.1,
-                card_pair.0.cmp(card_pair.1)
-            );
             match card_pair.0.cmp(card_pair.1) {
                 core::cmp::Ordering::Equal => {}
                 ord => return ord,
