@@ -1,20 +1,12 @@
+pub mod hand_score;
+
 use super::card::Card;
+use hand_score::HandScore;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Hand {
     cards: [Card; 5],
     score: HandScore,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum HandScore {
-    FiveOfAKind,
-    FourOfAKind,
-    FullHouse,
-    ThreeOfAKind,
-    TwoPair,
-    OnePair,
-    HighCard,
 }
 
 impl Hand {
@@ -41,6 +33,12 @@ impl Ord for Hand {
             ord => return ord,
         }
         for card_pair in self.cards.iter().zip(other.cards.iter()) {
+            println!(
+                "Comparison of {:?} and {:?} is {:?}",
+                card_pair.0,
+                card_pair.1,
+                card_pair.0.cmp(card_pair.1)
+            );
             match card_pair.0.cmp(card_pair.1) {
                 core::cmp::Ordering::Equal => {}
                 ord => return ord,
@@ -67,11 +65,5 @@ impl TryFrom<[char; 5]> for Hand {
             }
         };
         Ok(Hand::new(cards))
-    }
-}
-
-impl From<[Card; 5]> for HandScore {
-    fn from(value: [Card; 5]) -> Self {
-        todo!()
     }
 }
